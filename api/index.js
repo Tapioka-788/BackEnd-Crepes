@@ -59,10 +59,6 @@ app.post('/produtos', async (req, res) => {
     else if (!imgSrc) {
         res.status(400).json({ mensagem: 'imgSrc do cartão inválido!' })
         console.log('Novo cartao não cadastrado')
-    }
-    else if (!link) {
-        res.status(400).json({ mensagem: 'Link do cartão inválido!' })
-        console.log('Novo cartao não cadastrado')
     }else {
         try {
             const novoCartaoRef = await bd.collection('produtos').add({
