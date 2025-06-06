@@ -31,8 +31,7 @@ app.use(express.json());
 
 app.get('/produtos', async (req, res) => {
     try {
-        const response = await bd.collection("produtos")
-            .orderBy("imgSrc", "asc").get();
+        const response = await bd.collection("produtos").get();
         const produtos = response.docs.map(doc => ({
             id: doc.id, ...doc.data(),
         }));
