@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Produtos</title>
+</head>
+<body>
+  <h1>Produtos Cadastrados</h1>
+  <ul id="produtos"></ul>
+
+  <script>
+    async function carregarProdutos() {
+      try {
+        const response = await fetch('http://localhost:3000/produtos'); // Altere a porta se necessário
+        const data = await response.json();
+        const lista = document.getElementById('produtos');
+
+        data.produtos.forEach(produto => {
+          const item = document.createElement('li');
+          item.innerHTML = `<strong>${produto.nome}</strong>: ${produto.descricao} <br> <img src="${produto.imgSrc}" width="100" />`;
+          lista.appendChild(item);
+        });
+      } catch (err) {
+        console.error('Erro ao carregar produtos:', err);
+      }
+    }
+
+    carregarProdutos();
+  </script>
+</body>
+</html>

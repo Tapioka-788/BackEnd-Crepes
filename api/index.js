@@ -76,6 +76,8 @@ app.post('/produtos', async (req, res) => {
     }
 })
 
+module.exports = app
+
 // app.delete('/produtos', async (req, res) => {
 //     const { id } = req.body;
 //     if (!id) {
@@ -129,5 +131,3 @@ app.post('/produtos', async (req, res) => {
 //         }
 //     }
 // })
-
-module.exports = app
