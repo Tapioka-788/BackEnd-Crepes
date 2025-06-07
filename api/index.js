@@ -44,6 +44,24 @@ app.get('/produtos', async (req, res) => {
     }
 });
 
+app.get('/carrinho', async (req, res) => {
+    try {
+        const response = await bd.collection("carrinho")
+            .orderBy("adicionadoEm", "desc").get();
+        const carrinho = response.docs.map(doc => ({
+            id: doc.id, ...doc.data(),
+        }));
+        console.log(carrinho);
+        res.status(200).json({ carrinho });
+        console.log('Itens do carrinho devolvidos com sucesso!');
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ mensagem: 'Erro ao buscar itens do carrinho: ' + e });
+        console.log('Erro ao buscar dados: ' + e);
+    }
+});
+
+
 app.post('/carrinho', async (req, res) => {
     const { usuario, produtoId } = req.body;
 
