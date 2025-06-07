@@ -73,7 +73,7 @@ app.post('/usuarios', async (req, res) => {
     }
 
     try {
-        const novoItemRef = await bd.collection('carrinho').add({
+        const novoItemRef = await bd.collection('usuarios').add({
             usuario: usuario, // Armazena apenas nome, turma e chamada do usuário
             produtoId: produtoId, // Armazena apenas o ID do produto
             adicionadoEm: admin.firestore.FieldValue.serverTimestamp()
