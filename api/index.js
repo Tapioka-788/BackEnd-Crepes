@@ -46,16 +46,16 @@ app.get('/produtos', async (req, res) => {
 
 app.get('/usuarios', async (req, res) => {
     try {
-        const response = await bd.collection("carrinho").get();
-        const carrinho = response.docs.map(doc => ({
+        const response = await bd.collection("usuarios").get();
+        const usuarios = response.docs.map(doc => ({
             id: doc.id, ...doc.data(),
         }));
-        console.log(carrinho);
-        res.status(200).json({ carrinho });
-        console.log('Itens do carrinho devolvidos com sucesso!');
+        console.log(usuarios);
+        res.status(200).json({ usuarios });
+        console.log('Itens do usuarios devolvidos com sucesso!');
     } catch (e) {
         console.log(e);
-        res.status(500).json({ mensagem: 'Erro ao buscar itens do carrinho: ' + e });
+        res.status(500).json({ mensagem: 'Erro ao buscar itens do usuarios: ' + e });
         console.log('Erro ao buscar dados: ' + e);
     }
 });
