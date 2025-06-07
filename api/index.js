@@ -31,7 +31,8 @@ app.use(express.json());
 
 app.get('/produtos', async (req, res) => {
     try {
-        const response = await bd.collection("produtos").get();
+        const response = await bd.collection("produtos")
+            .orderBy("nome", "asc").get();
         const produtos = response.docs.map(doc => ({
             id: doc.id, ...doc.data(),
         }));
@@ -58,7 +59,7 @@ app.post('/produtos', async (req, res) => {
     else if (!imgSrc) {
         res.status(400).json({ mensagem: 'imgSrc do cartão inválido!' })
         console.log('Novo cartao não cadastrado')
-    }else {
+    } else {
         try {
             const novoCartaoRef = await bd.collection('produtos').add({
                 nome: nome,
