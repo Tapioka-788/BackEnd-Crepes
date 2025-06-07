@@ -44,37 +44,63 @@ app.get('/produtos', async (req, res) => {
     }
 });
 
-app.post('/produtos', async (req, res) => {
-    const { nome, descricao, imgSrc, } = req.body
-    if (!nome) {
-        res.status(400).json({ mensagem: 'Nome do cartão inválido!' })
-        console.log('Novo cartao não cadastrado')
+app.post('/carrinho', async (req, res) => {
+    const { usuario, produtoId } = req.body;
+
+    if (!usuario || !usuario.nomeUx || !usuario.turma || !usuario.nChamada) {
+        return res.status(400).json({ mensagem: 'Dados do usuário inválidos!' });
     }
-    else if (!descricao) {
-        res.status(400).json({ mensagem: 'descricao do cartão inválido!' })
-        console.log('Novo cartao não cadastrado')
+    
+    if (!produtoId) {
+        return res.status(400).json({ mensagem: 'ID do produto inválido!' });
     }
-    else if (!imgSrc) {
-        res.status(400).json({ mensagem: 'imgSrc do cartão inválido!' })
-        console.log('Novo cartao não cadastrado')
-    } else {
-        try {
-            const novoCartaoRef = await bd.collection('produtos').add({
-                nome: nome,
-                descricao: descricao,
-                imgSrc: imgSrc,
-                criadoEm: admin.firestore.FieldValue.serverTimestamp()
-            })
-            res.status(201).json({ mensagem: 'Cartao cadastrado com sucesso', id: novoCartaoRef.id })
-            console.log('Novo cartão cadastrado com ID:', novoCartaoRef.id)
-        } catch (error) {
-            console.error('Erro ao cadastrar cartão!', error)
-            res.status(500).json({ mensagem: 'Erro ao cadastrar cartão' })
-        }
+
+    try {
+        const novoItemRef = await bd.collection('carrinho').add({
+            usuario: usuario, // Armazena apenas nome, turma e chamada do usuário
+            produtoId: produtoId, // Armazena apenas o ID do produto
+            adicionadoEm: admin.firestore.FieldValue.serverTimestamp()
+        });
+
+        res.status(201).json({ mensagem: 'Produto adicionado ao carrinho!', id: novoItemRef.id });
+        console.log('Produto adicionado ao carrinho com ID:', novoItemRef.id);
+    } catch (error) {
+        console.error('Erro ao adicionar ao carrinho!', error);
+        res.status(500).json({ mensagem: 'Erro ao adicionar ao carrinho' });
     }
-})
+});
 
 module.exports = app
+
+// app.post('/produtos', async (req, res) => {
+//     const { nome, descricao, imgSrc, } = req.body
+//     if (!nome) {
+//         res.status(400).json({ mensagem: 'Nome do cartão inválido!' })
+//         console.log('Novo cartao não cadastrado')
+//     }
+//     else if (!descricao) {
+//         res.status(400).json({ mensagem: 'descricao do cartão inválido!' })
+//         console.log('Novo cartao não cadastrado')
+//     }
+//     else if (!imgSrc) {
+//         res.status(400).json({ mensagem: 'imgSrc do cartão inválido!' })
+//         console.log('Novo cartao não cadastrado')
+//     } else {
+//         try {
+//             const novoCartaoRef = await bd.collection('produtos').add({
+//                 nome: nome,
+//                 descricao: descricao,
+//                 imgSrc: imgSrc,
+//                 criadoEm: admin.firestore.FieldValue.serverTimestamp()
+//             })
+//             res.status(201).json({ mensagem: 'Cartao cadastrado com sucesso', id: novoCartaoRef.id })
+//             console.log('Novo cartão cadastrado com ID:', novoCartaoRef.id)
+//         } catch (error) {
+//             console.error('Erro ao cadastrar cartão!', error)
+//             res.status(500).json({ mensagem: 'Erro ao cadastrar cartão' })
+//         }
+//     }
+// })
 
 // app.delete('/produtos', async (req, res) => {
 //     const { id } = req.body;
