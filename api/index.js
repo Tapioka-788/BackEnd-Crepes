@@ -27,8 +27,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Caminhos da tela DOS produtos
-
 app.get('/produtos', async (req, res) => {
     try {
         const response = await bd.collection("produtos")
