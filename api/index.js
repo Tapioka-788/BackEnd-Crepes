@@ -44,10 +44,9 @@ app.get('/produtos', async (req, res) => {
     }
 });
 
-app.get('/carrinho', async (req, res) => {
+app.get('/usuarios', async (req, res) => {
     try {
-        const response = await bd.collection("carrinho")
-            .orderBy("adicionadoEm", "desc").get();
+        const response = await bd.collection("carrinho").get();
         const carrinho = response.docs.map(doc => ({
             id: doc.id, ...doc.data(),
         }));
@@ -62,7 +61,7 @@ app.get('/carrinho', async (req, res) => {
 });
 
 
-app.post('/carrinho', async (req, res) => {
+app.post('/usuarios', async (req, res) => {
     const { usuario, produtoId } = req.body;
 
     if (!usuario || !usuario.nomeUx || !usuario.turma || !usuario.nChamada) {
