@@ -87,6 +87,31 @@ app.post('/usuarios', async (req, res) => {
     }
 });
 
+app.delete('/usuarios', async (req, res) => {
+    const { id } = req.body;
+    
+    if (!id) {
+        return res.status(400).json({ mensagem: 'ID do produto não fornecido!' });
+    }
+
+    try {
+        const itemRef = bd.collection('usuarios').doc(id);
+        const doc = await itemRef.get();
+
+        if (!doc.exists) {
+            return res.status(404).json({ mensagem: `Produto com ID ${id} não encontrado no carrinho!` });
+        }
+
+        await itemRef.delete();
+        res.status(200).json({ mensagem: `Produto com ID ${id} removido do carrinho!` });
+        console.log(`Produto com ID ${id} removido do carrinho.`);
+    } catch (error) {
+        console.error("Erro ao remover produto do carrinho!", error);
+        res.status(500).json({ mensagem: "Erro ao remover produto do carrinho" });
+    }
+});
+
+
 module.exports = app
 
 // app.post('/produtos', async (req, res) => {
