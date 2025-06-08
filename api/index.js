@@ -67,7 +67,7 @@ app.post('/usuarios', async (req, res) => {
     if (!usuario || !usuario.nomeUx || !usuario.turma || !usuario.nChamada) {
         return res.status(400).json({ mensagem: 'Dados do usuário inválidos!' });
     }
-    
+
     if (!produtoId) {
         return res.status(400).json({ mensagem: 'ID do produto inválido!' });
     }
@@ -88,21 +88,21 @@ app.post('/usuarios', async (req, res) => {
 });
 
 app.delete('/usuarios/:id', async (req, res) => {
-    const { id } = req.params; // Agora pegamos o ID pela URL
+    const { id } = req.params;
 
     if (!id) {
         return res.status(400).json({ mensagem: 'ID do produto não fornecido!' });
     }
 
     try {
-        const itemRef = bd.collection('usuarios').doc(id);
-        const doc = await itemRef.get();
+        const docRef = bd.collection('usuarios').doc(id);
+        const docSnap = await docRef.get();
 
-        if (!doc.exists) {
+        if (!docSnap.exists) {
             return res.status(404).json({ mensagem: `Produto com ID ${id} não encontrado no carrinho!` });
         }
 
-        await itemRef.delete();
+        await docRef.delete();
         res.status(200).json({ mensagem: `Produto com ID ${id} removido do carrinho!` });
         console.log(`Produto com ID ${id} removido do carrinho.`);
     } catch (error) {
@@ -110,7 +110,6 @@ app.delete('/usuarios/:id', async (req, res) => {
         res.status(500).json({ mensagem: "Erro ao remover produto do carrinho" });
     }
 });
-
 
 module.exports = app
 
