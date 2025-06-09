@@ -88,23 +88,28 @@ app.post('/usuarios', async (req, res) => {
 });
 
 app.delete('/usuarios', async (req, res) => {
-    const { id } = req.body;
+    const { usuarioNome, produtoId } = req.body;
 
-    if (!id) {
-        return res.status(400).json({ mensagem: 'ID do produto não fornecido!' });
+    if (!usuarioNome || !produtoId) {
+        return res.status(400).json({ mensagem: 'Dados inválidos! Necessário nome do usuário e ID do produto.' });
     }
 
     try {
-        const docRef = bd.collection('usuarios').doc(id);
-        const docSnap = await docRef.get();
+        const querySnapshot = await bd.collection('usuarios')
+            .where("usuario.nomeUx", "==", usuarioNome)
+            .where("produtoId", "==", produtoId)
+            .get();
 
-        if (!docSnap.exists) {
-            return res.status(404).json({ mensagem: `Produto com ID ${id} não encontrado no carrinho!` });
+        if (querySnapshot.empty) {
+            return res.status(404).json({ mensagem: `Produto com ID ${produtoId} não encontrado no carrinho do usuário ${usuarioNome}!` });
         }
 
-        await docRef.delete();
-        res.status(200).json({ mensagem: `Produto com ID ${id} removido do carrinho!` });
-        console.log(`Produto com ID ${id} removido do carrinho.`);
+        querySnapshot.forEach(async (doc) => {
+            await doc.ref.delete();
+            console.log(`Produto ${produtoId} removido do carrinho do usuário ${usuarioNome}.`);
+        });
+
+        res.status(200).json({ mensagem: `Produto ${produtoId} removido do carrinho do usuário ${usuarioNome}.` });
     } catch (error) {
         console.error("Erro ao remover produto do carrinho!", error);
         res.status(500).json({ mensagem: "Erro ao remover produto do carrinho" });
@@ -112,87 +117,3 @@ app.delete('/usuarios', async (req, res) => {
 });
 
 module.exports = app
-
-// app.post('/produtos', async (req, res) => {
-//     const { nome, descricao, imgSrc, } = req.body
-//     if (!nome) {
-//         res.status(400).json({ mensagem: 'Nome do cartão inválido!' })
-//         console.log('Novo cartao não cadastrado')
-//     }
-//     else if (!descricao) {
-//         res.status(400).json({ mensagem: 'descricao do cartão inválido!' })
-//         console.log('Novo cartao não cadastrado')
-//     }
-//     else if (!imgSrc) {
-//         res.status(400).json({ mensagem: 'imgSrc do cartão inválido!' })
-//         console.log('Novo cartao não cadastrado')
-//     } else {
-//         try {
-//             const novoCartaoRef = await bd.collection('produtos').add({
-//                 nome: nome,
-//                 descricao: descricao,
-//                 imgSrc: imgSrc,
-//                 criadoEm: admin.firestore.FieldValue.serverTimestamp()
-//             })
-//             res.status(201).json({ mensagem: 'Cartao cadastrado com sucesso', id: novoCartaoRef.id })
-//             console.log('Novo cartão cadastrado com ID:', novoCartaoRef.id)
-//         } catch (error) {
-//             console.error('Erro ao cadastrar cartão!', error)
-//             res.status(500).json({ mensagem: 'Erro ao cadastrar cartão' })
-//         }
-//     }
-// })
-
-// app.delete('/produtos', async (req, res) => {
-//     const { id } = req.body;
-//     if (!id) {
-//         res.status(400).json({ mensagem: 'Id não fornecido' });
-//         console.log('Id não fornecido');
-//     } else {
-//         try {
-//             const cartaoRef = bd.collection('produtos').doc(id);
-//             const doc = await cartaoRef.get();
-//             if (!doc.exists) {
-//                 res.status(404).json({ mensagem: `Cartão com Id ${id} não encontrado` });
-//                 console.log('Cartão não encontrado');
-//             } else {
-//                 await cartaoRef.delete();
-//                 res.status(200).json({ mensagem: `Cartão com Id ${id} excluido` });
-//                 console.log(`Cartão com Id ${id} excluido`);
-//             }
-//         } catch (error) {
-//             console.error('Erro ao excluir cartão!', error);
-//             res.status(500).json({ mensagem: 'Erro ao excluir cartão' });
-//         }
-//     }
-// });
-
-// app.put('/produtos', async (req, res) => {
-//     const { nome, descricao, imgSrc, link, img, id } = req.body
-//     if (!id) {
-//         res.status(400).json({ mensagem: 'Id não fornecido' })
-//         console.log('Cartão não atulizado, Id inválido')
-//     } else {
-//         try {
-//             const cartaoRef = bd.collection('produtos').doc(id)
-//             const doc = await cartaoRef.get()
-//             if (!doc.exists) {
-//                 res.status(404).json({ mensagem: 'Cartão com id ' + id + ' não encontrado' })
-//                 console.log('Cartão não encontrado')
-//             } else {
-//                 const dadosAtualizados = {}
-//                 if (nome) dadosAtualizados.nome = nome
-//                 if (descricao) dadosAtualizados.descricao = descricao
-//                 if (imgSrc) dadosAtualizados.imgSrc = imgSrc
-//                 if (link) dadosAtualizados.link = link
-//                 if (img) dadosAtualizados.img = img
-//                 await cartaoRef.update(dadosAtualizados)
-//                 res.status(200).json({ mensagem: 'Cartão com id ' + id + ' atulizado' })
-//                 console.log('Cartão com id ' + id + ' atulizado')
-//             }
-//         } catch (e) {
-//             console.error('Erro ao atulizar cartão!', error)
-//             res.status(500).json({ mensagem: 'Erro ao atulizar cartão' })
-//         }
-//     }
-// })
