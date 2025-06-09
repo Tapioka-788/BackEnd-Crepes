@@ -87,8 +87,8 @@ app.post('/usuarios', async (req, res) => {
     }
 });
 
-app.delete('/usuarios/:id', async (req, res) => {
-    const { id } = req.params;
+app.delete('/usuarios', async (req, res) => {
+    const { id } = req.body;
 
     if (!id) {
         return res.status(400).json({ mensagem: 'ID do produto não fornecido!' });
