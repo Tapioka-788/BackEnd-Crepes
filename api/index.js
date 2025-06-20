@@ -116,6 +116,28 @@ app.delete('/usuarios', async (req, res) => {
     }
 });
 
+app.post('/comprovantes', async (req, res) => {
+    const { nomeUx, comprovante, produtos } = req.body;
+
+    if (!nomeUx || !comprovante || !Array.isArray(produtos)) {
+        return res.status(400).json({ mensagem: "Dados inválidos" });
+    }
+
+    try {
+        const docRef = await bd.collection('comprovantes').add({
+            nomeUx,
+            comprovante,
+            produtos
+        });
+
+        res.status(201).json({ mensagem: "Comprovante salvo com sucesso!", id: docRef.id });
+        console.log("Comprovante salvo com sucesso:", docRef.id);
+    } catch (error) {
+        console.error("Erro ao salvar comprovante:", error);
+        res.status(500).json({ mensagem: "Erro ao salvar comprovante" });
+    }
+});
+
 module.exports = app
 
 // MADE BY GUILHERME ZUCHELLI FELIPETTO
