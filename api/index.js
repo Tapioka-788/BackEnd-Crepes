@@ -138,6 +138,22 @@ app.post('/comprovantes', async (req, res) => {
     }
 });
 
+app.get('/comprovantes', async (req, res) => {
+    try {
+        const snapshot = await bd.collection('comprovantes').get();
+        const comprovantes = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        res.status(200).json({ comprovantes });
+        console.log("Comprovantes retornados com sucesso.");
+    } catch (error) {
+        console.error("Erro ao buscar comprovantes:", error);
+        res.status(500).json({ mensagem: "Erro ao buscar comprovantes" });
+    }
+});
+
 module.exports = app
 
 // MADE BY GUILHERME ZUCHELLI FELIPETTO
